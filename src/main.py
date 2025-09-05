@@ -1,6 +1,13 @@
-def run():
-    pass
+from fastapi import FastAPI
+
+app = FastAPI()
 
 
-if __name__ == "__main__":
-    run()
+@app.get("/")
+async def root():
+    return {"message": "Ok"}
+
+
+@app.get("/gettests")
+async def root():
+    return {"message": "Hello world!"}
