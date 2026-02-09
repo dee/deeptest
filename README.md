@@ -1,6 +1,6 @@
-# GPTest
+# DeepTest
 
-**GPTest** — because writing tests is tedious.  
+**DeepTest** — because writing tests is tedious.
 An AI-powered test generator built with FastAPI.
 
 ---
