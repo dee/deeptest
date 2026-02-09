@@ -23,7 +23,7 @@ async def root():
     return {"message": "Ok"}
 
 
-@app.put("/get-tests/")
+@app.post("/get-tests/")
 async def get_tests(request: Request):
     logger.debug("Received request")
     return generate_tests(request.language, request.framework, request.source)
@@ -50,10 +50,9 @@ Source code:
 {source_code}
 \"\"\"
 """
-    resp = client.ChatCompletion.create(
+    resp = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}],
         temperature=0.3
     )
     return resp.choices[0].message.content.strip()
-
