@@ -7,7 +7,7 @@ import os
 
 app = FastAPI()
 load_dotenv()
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+client = OpenAI(api_key=os.environ.get("DEEPSEEK_API_KEY"), base_url="https://api.deepseek.com")
 logger.debug("Client created")
 
 
@@ -51,7 +51,7 @@ Source code:
 \"\"\"
 """
     resp = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="deepseek-chat",
         messages=[{"role": "user", "content": prompt}],
         temperature=0.3
     )
