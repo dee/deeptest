@@ -7,7 +7,11 @@ import os
 
 app = FastAPI()
 load_dotenv()
-client = OpenAI(api_key=os.environ.get("DEEPSEEK_API_KEY"), base_url="https://api.deepseek.com")
+api_key = os.environ.get("DEEPSEEK_API_KEY")
+if not api_key:
+    raise RuntimeError("DeepSeek API key not found!")
+
+client = OpenAI(api_key=api_key, base_url="https://api.deepseek.com")
 logger.debug("Client created")
 
 
@@ -18,13 +22,13 @@ class Request(BaseModel):
 
 
 @app.get("/")
-async def root():
+def root():
     logger.debug("Received ping")
     return {"message": "Ok"}
 
 
 @app.post("/get-tests/")
-async def get_tests(request: Request):
+def get_tests(request: Request):
     logger.debug("Received request")
     return generate_tests(request.language, request.framework, request.source)
 
@@ -33,7 +37,8 @@ def generate_tests(language, framework, source_code):
     global client
     prompt = f"""
 You are an expert software engineer and test automation specialist.
-Your task is to generate **comprehensive, clean, and idiomatic unit tests** for the provided source code.
+Your task is to generate **comprehensive, clean, and idiomatic unit tests** for the 
+provided source code.
 
 Requirements:
 - Language: {language}
