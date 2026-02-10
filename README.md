@@ -1,7 +1,8 @@
 # DeepTest
 
-**DeepTest** — because writing tests is tedious.
-An AI-powered test generator built with FastAPI.
+**DeepTest** — because writing tests is boring.
+An AI-powered test generator built with FastAPI. 
+Uses DeepSeek as a base.
 
 ---
 
@@ -10,5 +11,3 @@ An AI-powered test generator built with FastAPI.
 - Support for multiple languages and frameworks (planned).
 - Simple REST API interface.
 - Open-source, minimal, hackable.
-
----
