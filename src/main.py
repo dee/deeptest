@@ -1,7 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel
 from loguru import logger
-from openai import OpenAI
+from openai import OpenAI, APITimeoutError
 from dotenv import load_dotenv
 import os
 
@@ -55,9 +55,14 @@ Source code:
 {source_code}
 \"\"\"
 """
-    resp = client.chat.completions.create(
-        model="deepseek-chat",
-        messages=[{"role": "user", "content": prompt}],
-        temperature=0.3
-    )
-    return resp.choices[0].message.content.strip()
+    try:
+        resp = client.chat.completions.create(
+            model="deepseek-chat",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.3
+        )
+        return resp.choices[0].message.content.strip()
+    except APITimeoutError:
+        logger.error("A request timeout was reached.")
+        raise HTTPException(status_code=status.HTTP_504_GATEWAY_TIMEOUT, 
+            detail="Request to DeepSeek timed out")
