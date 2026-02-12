@@ -82,6 +82,6 @@ Source code:
         raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY,
             detail="Request to DeepSeek timed out")
     except Exception as e:
-        logger.error(f"Error occured: {e.message}")
+        logger.exception("Unexpected error during DeepSeek call")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Request to DeepSeek timed out")
+            detail="Internal server error")
