@@ -5,6 +5,7 @@ from openai import OpenAI, APITimeoutError, APIConnectionError
 from dotenv import load_dotenv
 import os
 import time
+from contextlib import contextmanager
 
 app = FastAPI()
 load_dotenv()
@@ -26,6 +27,17 @@ class GenerateTestsResponse(BaseModel):
     tests: str
 
 
+@contextmanager
+def log_duration(message: str):
+    # i use monotonic just in case system clock changes during the request
+    request_start = time.monotonic()
+    try:
+        yield
+    finally:
+        duration = time.monotonic() - request_start
+        logger.debug(message.format(duration))
+
+
 @app.get("/")
 def root():
     logger.debug("Received ping")
@@ -35,13 +47,9 @@ def root():
 @app.post("/tests")
 def get_tests(request: GenerateTestsRequest):
     logger.debug("Received request")
-    # i use monotonic just in case system clock changes during the request
-    request_start = time.monotonic()
-    response = GenerateTestsResponse(tests = generate_tests(request.language, request.framework, 
-        request.source))
-    duration = time.monotonic() - request_start
-    logger.debug(f"Request took {duration:.2f} s")
-    return response
+    with log_duration("Request took {:.2f} s"):
+        return GenerateTestsResponse(tests = generate_tests(request.language, request.framework, 
+            request.source))
 
 
 def generate_tests(language, framework, source_code):
