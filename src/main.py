@@ -4,6 +4,7 @@ from loguru import logger
 from openai import OpenAI, APITimeoutError
 from dotenv import load_dotenv
 import os
+import time
 
 app = FastAPI()
 load_dotenv()
@@ -31,11 +32,16 @@ def root():
     return {"message": "Ok"}
 
 
-@app.post("/get-tests/")
+@app.post("/tests")
 def get_tests(request: GenerateTestsRequest):
     logger.debug("Received request")
-    return GenerateTestsResponse(tests = generate_tests(request.language, request.framework, 
+    # i use monotonic just in case system clock changes during the request
+    request_start = time.monotonic()
+    response = GenerateTestsResponse(tests = generate_tests(request.language, request.framework, 
         request.source))
+    duration = time.monotonic() - request_start
+    logger.debug(f"Request took {duration:.2f} s")
+    return response
 
 
 def generate_tests(language, framework, source_code):
