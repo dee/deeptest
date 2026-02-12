@@ -1,13 +1,13 @@
 1. Sync calls from sync endpoint - done
 2. Check if an API key exists - done
-3. Timeouts + message to user (Нужен таймаут сетевого запроса и перехват исключений клиента, чтобы возвращать 502/504 вместо 500 с трейсом)
+3. Timeouts + message to user 
 4. Input length validation - done
 5. Respose model - done
 
 6. Remove "global client" - done
 7. Rename Request to GenerateTestsRequest - done
 8. Endpoint without verb and a trailing slash - done
-9. Log request-id, execution time
+9. Log request-id; Log execution time - done
 
 10. Prompt injection protection.
 11. Future: caching by hash

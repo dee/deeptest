@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel, Field
 from loguru import logger
-from openai import OpenAI, APITimeoutError
+from openai import OpenAI, APITimeoutError, APIConnectionError
 from dotenv import load_dotenv
 import os
 import time
@@ -76,4 +76,12 @@ Source code:
     except APITimeoutError:
         logger.error("A request timeout was reached.")
         raise HTTPException(status_code=status.HTTP_504_GATEWAY_TIMEOUT, 
+            detail="Request to DeepSeek timed out")
+    except APIConnectionError:
+        logger.error("Failed to connect to API")
+        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Request to DeepSeek timed out")
+    except Exception as e:
+        logger.error(f"Error occured: {e.message}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Request to DeepSeek timed out")
