@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException, status
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from loguru import logger
 from openai import OpenAI, APITimeoutError
 from dotenv import load_dotenv
@@ -15,10 +15,14 @@ client = OpenAI(api_key=api_key, base_url="https://api.deepseek.com")
 logger.debug("Client created")
 
 
-class Request(BaseModel):
-    language: str
-    framework: str
-    source: str
+class GenerateTestsRequest(BaseModel):
+    language: str = Field(min_length = 1, max_length = 50)
+    framework: str = Field(min_length = 1, max_length = 50)
+    source: str = Field(min_length = 1, max_length = 50000)
+
+
+class GenerateTestsResponse(BaseModel):
+    tests: str
 
 
 @app.get("/")
@@ -28,9 +32,10 @@ def root():
 
 
 @app.post("/get-tests/")
-def get_tests(request: Request):
+def get_tests(request: GenerateTestsRequest):
     logger.debug("Received request")
-    return generate_tests(request.language, request.framework, request.source)
+    return GenerateTestsResponse(tests = generate_tests(request.language, request.framework, 
+        request.source))
 
 
 def generate_tests(language, framework, source_code):
