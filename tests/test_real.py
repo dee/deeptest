@@ -7,7 +7,7 @@ with open("example1.rs", "r", encoding="utf-8") as f:
 
 
 base_url = "http://127.0.0.1:8000"
-response = requests.post(f"{base_url}/get-tests/",
+response = requests.post(f"{base_url}/tests",
 	json={"language": "Rust",
           "framework": "internal",
           "source": file_content})
